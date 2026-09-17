@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Менеджер Задач (SSR)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #f8f9fa; color: #333; }
+    h1 { text-align: center; color: #2c3e50; }
+    .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: .5rem; font-weight: 600; }
+    input[type="text"], input[type="date"], textarea { width: 100%; padding: .5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background: #007bff; color: #fff; border: none; padding: .6rem 1.2rem; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .filters { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .filters a { text-decoration: none; padding: .4rem .8rem; border-radius: 4px; background: #e9ecef; color: #495057; }
+    .filters a.active { background: #007bff; color: white; }
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #fff; border-bottom: 1px solid #eee; border-radius: 4px; margin-bottom: .5rem; }
+    .task-item.completed .title { text-decoration: line-through; color: #888; }
+    .actions { display: flex; gap: .5rem; align-items: center; }
+    .btn-toggle { background: #28a745; }
+    .btn-delete { background: #dc3545; }
+    .error-msg { background: #f8d7da; color: #721c24; padding: .75rem; border-radius: 4px; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Список задач</h1>
+
+  <% if (error) { %>
+    <div class="error-msg"><%= error %></div>
+  <% } %>
+
+  <!-- Форма создания задачи -->
+  <div class="card">
+    <h2>Новая задача</h2>
+    <form action="/tasks" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Название *</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Описание</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="dueDate">Срок выполнения *</label>
+        <input type="date" id="dueDate" name="dueDate" required>
+      </div>
+      <div class="form-group">
+        <label for="attachment">Прикрепить файл</label>
+        <input type="file" id="attachment" name="attachment">
+      </div>
+      <button type="submit">Добавить задачу</button>
+    </form>
+  </div>
+
+  <!-- Фильтрация -->
+  <div class="filters">
+    <a href="/?status=all" class="<%= currentFilter === 'all' ? 'active' : '' %>">Все</a>
+    <a href="/?status=pending" class="<%= currentFilter === 'pending' ? 'active' : '' %>">В процессе</a>
+    <a href="/?status=completed" class="<%= currentFilter === 'completed' ? 'active' : '' %>">Завершенные</a>
+  </div>
+
+  <!-- Список задач -->
+  <div>
+    <% if (tasks.length === 0) { %>
+      <p style="text-align: center; color: #777;">Задачи отсутствуют.</p>
+    <% } %>
+
+    <% tasks.forEach(task => { %>
+      <div class="task-item <%= task.status === 'completed' ? 'completed' : '' %>">
+        <div>
+          <div class="title"><strong><%= task.title %></strong></div>
+          <% if (task.description) { %>
+            <div style="font-size: .9em; color: #555;"><%= task.description %></div>
+          <% } %>
+          <div style="font-size: .8em; color: #888;">
+            Срок: <%= task.dueDate %> | Статус: <%= task.status === 'completed' ? 'Завершено' : 'В процессе' %>
+          </div>
+          <% if (task.file) { %>
+            <div style="margin-top: .3rem;">
+              📎 <a href="/uploads/<%= task.file.filename %>" download="<%= task.file.originalName %>">
+                <%= task.file.originalName %>
+              </a>
+            </div>
+          <% } %>
+        </div>
+
+        <div class="actions">
+          <form action="/tasks/<%= task.id %>/toggle" method="POST" style="display:inline;">
+            <button type="submit" class="btn-toggle">
+              <%= task.status === 'completed' ? 'Вернуть' : 'Завершить' %>
+            </button>
+          </form>
+          <form action="/tasks/<%= task.id %>/delete" method="POST" style="display:inline;">
+            <button type="submit" class="btn-delete">Удалить</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
