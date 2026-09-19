@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: spa_todo_app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Сохранение SQLite базы данных и файлов при пересборке
+      - todo_sqlite_data:/app/data
+      - todo_uploads_data:/app/public/uploads
+    restart: always
+
+volumes:
+  todo_sqlite_data:
+  todo_uploads_data:

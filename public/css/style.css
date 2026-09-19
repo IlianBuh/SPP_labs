@@ -1,0 +1,19 @@
+body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #f4f6f8; color: #333; }
+.container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+h1 { text-align: center; color: #1e293b; margin-bottom: 1.5rem; }
+.card { background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; }
+.form-group { margin-bottom: 1rem; }
+label { display: block; margin-bottom: .4rem; font-weight: 600; font-size: 0.9em; }
+input[type="text"], input[type="date"], textarea { width: 100%; padding: .6rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+.btn { border: none; padding: .6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: #16a34a; color: #fff; }
+.btn-danger { background: #dc2626; color: #fff; }
+.filters { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+.filter-btn { border: 1px solid #cbd5e1; background: #fff; padding: .5rem 1rem; border-radius: 6px; cursor: pointer; }
+.filter-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.task-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: .75rem; background: #fff; }
+.task-item.completed .title { text-decoration: line-through; color: #94a3b8; }
+.error-banner { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; }
+.hidden { display: none; }
