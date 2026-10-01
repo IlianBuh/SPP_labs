@@ -42,4 +42,9 @@ export class UserRepository {
     if (result.changes === 0) return null;
     return this.findById(id);
   }
+
+  static updatePassword(id, passwordHash) {
+    const stmt = db.prepare('UPDATE users SET password_hash = ? WHERE id = ?');
+    return stmt.run(passwordHash, id).changes > 0;
+  }
 }

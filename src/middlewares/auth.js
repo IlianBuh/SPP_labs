@@ -1,5 +1,7 @@
 import { AuthService } from '../services/auth.js';
 import { UserRepository } from '../repositories/users.js';
+import { SessionRepository } from '../repositories/sessions.js';
+import { SessionService } from '../services/sessions.js';
 
 export const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
@@ -14,6 +16,18 @@ export const authenticate = (req, res, next) => {
 
   try {
     const payload = AuthService.verifyToken(token);
+    if (!payload.jti) {
+      throw new Error('token without jti');
+    }
+
+    const session = SessionRepository.findById(payload.jti);
+    if (!SessionService.isActive(session)) {
+      return res
+        .status(401)
+        .set('WWW-Authenticate', 'Bearer realm="api", error="invalid_token"')
+        .json({ success: false, message: 'Недействительный или просроченный токен' });
+    }
+
     const user = UserRepository.findById(payload.id);
     if (!user) {
       return res
@@ -27,6 +41,8 @@ export const authenticate = (req, res, next) => {
       login: user.login,
       email: user.email
     };
+    req.sessionId = payload.jti;
+    SessionService.refreshLastSeen(session);
     next();
   } catch (error) {
     res

@@ -16,6 +16,22 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
       - ADMIN_LOGIN=${ADMIN_LOGIN:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      # Защита от подбора паролей
+      - LOGIN_MAX_ATTEMPTS=${LOGIN_MAX_ATTEMPTS:-5}
+      - LOGIN_LOCKOUT_MS=${LOGIN_LOCKOUT_MS:-900000}
+      - LOGIN_IP_MAX_ATTEMPTS=${LOGIN_IP_MAX_ATTEMPTS:-20}
+      - LOGIN_IP_WINDOW_MS=${LOGIN_IP_WINDOW_MS:-900000}
+      # Контроль активных сессий
+      - MAX_SESSIONS_PER_USER=${MAX_SESSIONS_PER_USER:-5}
+      # Сброс пароля
+      - RESET_TOKEN_TTL_MS=${RESET_TOKEN_TTL_MS:-3600000}
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:3000}
+      # Доставка email (пустой SMTP_HOST — dev-fallback со ссылкой в логе)
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-}
     volumes:
       # Сохранение SQLite базы данных и файлов при пересборке
       - todo_sqlite_data:/app/data

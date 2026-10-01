@@ -12,6 +12,7 @@
 
     <!-- Блок уведомления об ошибках -->
     <div id="error-banner" class="error-banner hidden"></div>
+    <div id="success-banner" class="success-banner hidden"></div>
 
     <!-- Экран входа / регистрации -->
     <section id="auth-screen">
@@ -28,6 +29,9 @@
         <div class="form-group">
           <label for="login-password">Пароль</label>
           <input type="password" id="login-password" name="password" required>
+        </div>
+        <div class="auth-links">
+          <a href="#" id="forgot-password-link">Забыли пароль?</a>
         </div>
         <button type="submit" class="btn btn-primary">Войти</button>
       </form>
@@ -50,6 +54,28 @@
           <input type="password" id="reg-password-confirm" name="passwordConfirm" required>
         </div>
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+      </form>
+
+      <form id="forgot-password-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="forgot-email">Email</label>
+          <input type="email" id="forgot-email" name="email" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить ссылку для сброса</button>
+        <button type="button" id="back-to-login-btn" class="btn">Назад к входу</button>
+      </form>
+
+      <form id="reset-password-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reset-password">Новый пароль *</label>
+          <input type="password" id="reset-password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="reset-password-confirm">Подтверждение пароля *</label>
+          <input type="password" id="reset-password-confirm" name="passwordConfirm" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Сменить пароль</button>
+        <button type="button" id="reset-back-to-login-btn" class="btn">Назад к входу</button>
       </form>
     </section>
 
@@ -84,10 +110,20 @@
         </form>
       </section>
 
+      <!-- Панель сессий (все роли) -->
+      <section id="sessions-panel" class="card">
+        <h2>Активные подключения</h2>
+        <div id="sessions-list" class="users-list"></div>
+      </section>
+
       <!-- Панель админа -->
       <section id="admin-panel" class="card hidden">
         <h2>Панель админа</h2>
         <div id="users-list" class="users-list"></div>
+        <div id="admin-sessions-block" class="hidden">
+          <h3>Сессии пользователей</h3>
+          <div id="admin-sessions-list" class="users-list"></div>
+        </div>
       </section>
 
       <!-- Фильтрация -->
