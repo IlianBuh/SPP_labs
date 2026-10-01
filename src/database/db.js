@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 
 const dbDir = path.join(process.cwd(), 'data');
 if (!fs.existsSync(dbDir)) {
@@ -26,5 +27,34 @@ db.exec(`
     created_at TEXT NOT NULL
   )
 `);
+
+// Инициализация таблицы пользователей
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    login TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'reader'
+      CHECK(role IN ('reader', 'editor', 'admin')),
+    created_at TEXT NOT NULL
+  )
+`);
+
+// Сид первого админа из env-переменных (idempotent)
+const { ADMIN_EMAIL, ADMIN_LOGIN, ADMIN_PASSWORD } = process.env;
+if (ADMIN_EMAIL && ADMIN_LOGIN && ADMIN_PASSWORD) {
+  const existing = db
+    .prepare('SELECT id FROM users WHERE email = ? OR login = ?')
+    .get(ADMIN_EMAIL, ADMIN_LOGIN);
+
+  if (!existing) {
+    db.prepare(`
+      INSERT INTO users (email, login, password_hash, role, created_at)
+      VALUES (?, ?, ?, 'admin', ?)
+    `).run(ADMIN_EMAIL.trim(), ADMIN_LOGIN.trim(), bcrypt.hashSync(ADMIN_PASSWORD, 10), new Date().toISOString());
+    console.log(`Создан администратор: ${ADMIN_LOGIN}`);
+  }
+}
 
 export default db;

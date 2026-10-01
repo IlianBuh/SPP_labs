@@ -9,6 +9,13 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      # Секрет для подписи JWT и учётные данные первого админа.
+      # Значения подставляются из .env (docker compose автоматически читает .env),
+      # при отсутствии используются заглушки из .env.example.
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+      - ADMIN_LOGIN=${ADMIN_LOGIN:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
     volumes:
       # Сохранение SQLite базы данных и файлов при пересборке
       - todo_sqlite_data:/app/data
