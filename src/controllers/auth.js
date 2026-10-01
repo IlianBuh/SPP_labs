@@ -27,6 +27,9 @@ export class AuthController {
       }
       res.status(200).json({ success: true, data });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({ success: false, message: 'Ошибка валидации данных', errors: [error.message] });
+      }
       console.error(error);
       res.status(500).json({ success: false, message: 'Ошибка сервера при входе' });
     }

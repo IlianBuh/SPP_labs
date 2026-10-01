@@ -6,14 +6,20 @@ export const authenticate = (req, res, next) => {
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ success: false, message: 'Требуется авторизация' });
+    return res
+      .status(401)
+      .set('WWW-Authenticate', 'Bearer realm="api"')
+      .json({ success: false, message: 'Требуется авторизация' });
   }
 
   try {
     const payload = AuthService.verifyToken(token);
     const user = UserRepository.findById(payload.id);
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Пользователь не найден' });
+      return res
+        .status(401)
+        .set('WWW-Authenticate', 'Bearer realm="api", error="invalid_token"')
+        .json({ success: false, message: 'Пользователь не найден' });
     }
     req.user = {
       id: user.id,
@@ -23,14 +29,20 @@ export const authenticate = (req, res, next) => {
     };
     next();
   } catch (error) {
-    res.status(401).json({ success: false, message: 'Недействительный или просроченный токен' });
+    res
+      .status(401)
+      .set('WWW-Authenticate', 'Bearer realm="api", error="invalid_token"')
+      .json({ success: false, message: 'Недействительный или просроченный токен' });
   }
 };
 
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ success: false, message: 'Недостаточно прав для выполнения операции' });
+      return res
+        .status(403)
+        .set('WWW-Authenticate', 'Bearer realm="api", error="insufficient_scope"')
+        .json({ success: false, message: 'Недостаточно прав для выполнения операции' });
     }
     next();
   };

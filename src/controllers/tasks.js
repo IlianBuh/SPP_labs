@@ -7,6 +7,7 @@ export class TaskController {
       const tasks = TaskService.getAllTasks(status);
       res.status(200).json({ success: true, data: tasks });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: 'Ошибка сервера при получении задач' });
     }
   }
@@ -19,6 +20,7 @@ export class TaskController {
       }
       res.status(200).json({ success: true, data: task });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
   }
@@ -33,6 +35,7 @@ export class TaskController {
       });
       res.status(201).json({ success: true, data: task });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: 'Не удалось создать задачу' });
     }
   }
@@ -45,6 +48,7 @@ export class TaskController {
       }
       res.status(200).json({ success: true, data: updatedTask });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: 'Ошибка обновления статуса' });
     }
   }
@@ -55,8 +59,9 @@ export class TaskController {
       if (!deletedTask) {
         return res.status(404).json({ success: false, message: 'Задача не найдена' });
       }
-      res.status(200).json({ success: true, message: 'Задача успешно удалена' });
+      res.status(204).end();
     } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: 'Ошибка при удалении задачи' });
     }
   }

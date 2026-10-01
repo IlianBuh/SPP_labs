@@ -6,9 +6,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 export class AuthService {
   static register({ email, login, password }) {
-    email = (email || '').trim().toLowerCase();
-    login = (login || '').trim();
-    password = password || '';
+    if (typeof email !== 'string' || typeof login !== 'string' || typeof password !== 'string') {
+      throw new ValidationError('Email, логин и пароль должны быть строками.');
+    }
+    email = email.trim().toLowerCase();
+    login = login.trim();
+    password = password;
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new ValidationError('Некорректный формат email.');
@@ -34,8 +37,11 @@ export class AuthService {
   }
 
   static login({ login, password }) {
-    login = (login || '').trim();
-    password = password || '';
+    if (typeof login !== 'string' || typeof password !== 'string') {
+      throw new ValidationError('Логин и пароль должны быть строками.');
+    }
+    login = login.trim();
+    password = password;
 
     const user = UserRepository.findByLogin(login);
     if (!user || !bcrypt.compareSync(password, user.password_hash)) {

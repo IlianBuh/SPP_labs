@@ -239,8 +239,10 @@ class TaskApp {
         method: 'DELETE'
       });
 
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Не удалось удалить задачу');
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.message || 'Не удалось удалить задачу');
+      }
 
       this.fetchTasks();
     } catch (err) {
