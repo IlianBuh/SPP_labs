@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import { logger } from '../logger.js';
 
 const dbDir = path.join(process.cwd(), 'data');
 if (!fs.existsSync(dbDir)) {
@@ -53,7 +54,7 @@ if (ADMIN_EMAIL && ADMIN_LOGIN && ADMIN_PASSWORD) {
       INSERT INTO users (email, login, password_hash, role, created_at)
       VALUES (?, ?, ?, 'admin', ?)
     `).run(ADMIN_EMAIL.trim(), ADMIN_LOGIN.trim(), bcrypt.hashSync(ADMIN_PASSWORD, 10), new Date().toISOString());
-    console.log(`Создан администратор: ${ADMIN_LOGIN}`);
+    logger.info('Создан администратор', { login: ADMIN_LOGIN });
   }
 }
 

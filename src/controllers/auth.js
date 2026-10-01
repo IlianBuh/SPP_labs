@@ -1,4 +1,5 @@
 import { AuthService, ValidationError, ConflictError } from '../services/auth.js';
+import { logger } from '../logger.js';
 
 export class AuthController {
   static register(req, res) {
@@ -13,7 +14,7 @@ export class AuthController {
       if (error instanceof ConflictError) {
         return res.status(409).json({ success: false, message: error.message });
       }
-      console.error(error);
+      logger.error('Ошибка при регистрации', { err: error });
       res.status(500).json({ success: false, message: 'Ошибка сервера при регистрации' });
     }
   }
@@ -30,7 +31,7 @@ export class AuthController {
       if (error instanceof ValidationError) {
         return res.status(400).json({ success: false, message: 'Ошибка валидации данных', errors: [error.message] });
       }
-      console.error(error);
+      logger.error('Ошибка при входе', { err: error });
       res.status(500).json({ success: false, message: 'Ошибка сервера при входе' });
     }
   }

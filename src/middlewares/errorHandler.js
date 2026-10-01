@@ -1,4 +1,5 @@
 import multer from 'multer';
+import { logger } from '../logger.js';
 
 const BODY_PARSER_ERRORS = {
   'entity.parse.failed': {
@@ -36,6 +37,6 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(err.status).json({ success: false, message: err.message || 'Ошибка запроса' });
   }
 
-  console.error(err);
+  logger.error('Внутренняя ошибка сервера', { err, method: req.method, path: req.originalUrl });
   res.status(500).json({ success: false, message: 'Внутренняя ошибка сервера' });
 };
