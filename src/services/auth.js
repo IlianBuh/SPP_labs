@@ -25,7 +25,6 @@ export class AuthService {
     }
     email = email.trim().toLowerCase();
     login = login.trim();
-    password = password;
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new ValidationError('Некорректный формат email.');
@@ -55,7 +54,6 @@ export class AuthService {
       throw new ValidationError('Логин и пароль должны быть строками.');
     }
     login = login.trim();
-    password = password;
 
     const user = UserRepository.findByLogin(login);
     if (!user || !bcrypt.compareSync(password, user.password_hash)) {

@@ -44,7 +44,7 @@ export const authenticate = (req, res, next) => {
     req.sessionId = payload.jti;
     SessionService.refreshLastSeen(session);
     next();
-  } catch (error) {
+  } catch {
     res
       .status(401)
       .set('WWW-Authenticate', 'Bearer realm="api", error="invalid_token"')
