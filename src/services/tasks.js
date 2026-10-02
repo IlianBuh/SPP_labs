@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { TaskRepository } from '../repositories/tasks.js';
+import { logger } from '../logger.js';
 
 export class TaskService {
   static getAllTasks(status) {
@@ -48,7 +49,7 @@ export class TaskService {
     const deletedTask = TaskRepository.delete(id);
     if (deletedTask && deletedTask.file_path) {
       fs.unlink(path.resolve(deletedTask.file_path), (err) => {
-        if (err) console.error(`Ошибка удаления файла: ${err.message}`);
+        if (err) logger.error('Ошибка удаления файла', { message: err.message });
       });
     }
     return deletedTask;
