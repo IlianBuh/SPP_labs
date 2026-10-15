@@ -1,0 +1,28 @@
+{
+  "name": "pixel-canvas",
+  "version": "1.0.0",
+  "description": "Многопользовательская веб-игра «Пиксельный холст» (лабораторная №4)",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.3",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.27.0"
+  }
+}
