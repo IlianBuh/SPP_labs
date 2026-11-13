@@ -1,77 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Пиксельный холст</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atlas · Каталог данных</title><link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script></head>
 <body>
-  <div id="banner" class="banner hidden">
-    <span id="banner-text"></span>
-  </div>
-
+  <header class="topbar"><a class="brand" href="/">a<span>atlas</span><small>DATA EXPLORER / LAB 05</small></a><div class="header-right"><span class="live-dot"></span><span>Federated GraphQL</span><button id="token-button" class="quiet">Токен доступа</button></div></header>
   <main>
-    <section id="auth-view" class="auth-view hidden">
-      <div class="auth-card">
-        <h1>Пиксельный холст</h1>
-        <p class="subtitle">Многопользовательская игра: красите клетки, растёт ваш счёт</p>
-        <div class="tabs">
-          <button id="tab-login" class="tab active" type="button">Вход</button>
-          <button id="tab-register" class="tab" type="button">Регистрация</button>
-        </div>
-        <form id="auth-form">
-          <label for="username">Логин (3–24: латиница, цифры, _)</label>
-          <input id="username" name="username" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}">
-          <label for="password">Пароль (от 6 символов)</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="72">
-          <div id="auth-error" class="form-error hidden"></div>
-          <button id="auth-submit" type="submit">Войти</button>
-        </form>
-      </div>
+    <section class="hero"><div><span class="eyebrow">ТРИ ИСТОЧНИКА. ОДИН ГРАФ.</span><h1>Данные, связанные<br><em>между собой.</em></h1><p>Исследуйте книги, страны и товары. Собирайте подборки,<br>добавляйте заметки и наблюдайте за работой сервисов.</p></div><div class="hero-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="node n1">Книги<span>Open Library</span></div><div class="node n2">Страны<span>Countries Dataset</span></div><div class="node n3">Товары<span>DummyJSON</span></div><div class="hub">a</div></div></section>
+    <section id="stats" class="stats" aria-label="Статистика каталога"><div><b>—</b><span>Всего записей</span></div><div><b>—</b><span>Книги</span></div><div><b>—</b><span>Страны</span></div><div><b>—</b><span>Товары</span></div></section>
+    <nav class="tabs" aria-label="Разделы"><button data-tab="catalog" class="active">Каталог <span>01</span></button><button data-tab="collections">Подборки <span>02</span></button><button data-tab="imports">Источники и импорт <span>03</span></button><button data-tab="monitor">Мониторинг <span>04</span></button><button data-tab="explorer">GraphQL <span>05</span></button></nav>
+    <div id="notice" role="status" hidden></div>
+    <section id="catalog" class="panel">
+      <div class="section-heading"><div><h2>Весь мир в каталоге</h2><p id="results-label">Загрузка записей…</p></div><span class="pill">LIVE DATA</span></div>
+      <form id="filters" class="filters"><label class="search">Поиск<input id="search" placeholder="Название, автор или ключевое слово" maxlength="200" type="search"></label><label>Тип<select id="kind"><option value="">Все типы</option value="BOOK">Книги</option><option value="COUNTRY">Страны</option><option value="PRODUCT">Товары</option></select></label><label>Источник<select id="source"><option value="">Все источники</option><option value="openlibrary">Open Library</option><option value="countries">Countries Dataset</option><option value="dummyjson">DummyJSON</option></select></label><label>Сортировка<select id="sort"><option value="TITLE:ASC">Название А → Я</option><option value="TITLE:DESC">Название Я → А</option><option value="YEAR:DESC">Сначала новые</option><option value="YEAR:ASC">Сначала старые</option><option value="VALUE:DESC">Значение ↓</option><option value="VALUE:ASC">Значение ↑</option><option value="UPDATED_AT:DESC">Недавно обновлённые</option></select></label><button type="submit">Найти ↗</button><details><summary>Дополнительные фильтры</summary><div class="advanced"><label>Год от<input id="min-year" type="number"></label><label>Год до<input id="max-year" type="number"></label><label>Значение от<input id="min-value" type="number" step="any"></label><label>Значение до<input id="max-value" type="number" step="any"></label><label>Точный тег<input id="tag" maxlength="100"></label><label>На странице<select id="page-size"><option>12</option><option>24</option><option>48</option><option>100</option></select></label></div><small>Значение: число изданий для книг, площадь (км²) для стран, цена в USD для товаров.</small></details></form>
+      <div id="entries" class="grid" aria-live="polite"></div><div class="pagination"><button id="prev" class="quiet">← Назад</button><span id="page-label"></span><button id="next" class="quiet">Далее →</button></div>
     </section>
-
-    <section id="game-view" class="game-view hidden">
-      <header class="topbar">
-        <span class="logo">Пиксельный холст <span class="dim">100×100</span></span>
-        <div class="user-info">
-          <span id="user-name"></span>
-          <span class="dim" id="user-stats"></span>
-          <span id="conn-status" class="conn conn-offline">нет связи</span>
-          <button id="logout-btn" type="button">Выйти</button>
-        </div>
-      </header>
-
-      <div class="layout">
-        <div class="canvas-column">
-          <div class="canvas-wrap">
-            <canvas id="board" width="100" height="100"></canvas>
-            <canvas id="preview" width="100" height="100"></canvas>
-          </div>
-          <div class="controls">
-            <div class="cooldown-row">
-              <span class="dim">Кулдаун:</span>
-              <div class="cooldown-track"><div id="cooldown-bar" class="cooldown-bar full"></div></div>
-            </div>
-            <div id="palette" class="palette"></div>
-          </div>
-        </div>
-
-        <aside class="side">
-          <section class="panel">
-            <h2>Онлайн</h2>
-            <ul id="players-list" class="plain-list"></ul>
-          </section>
-          <section class="panel">
-            <h2>Лидеры</h2>
-            <ol id="leaderboard-list" class="plain-list"></ol>
-          </section>
-        </aside>
-      </div>
-    </section>
+    <section id="collections" class="panel" hidden><div class="section-heading"><div><h2>Ваши подборки</h2><p>Свяжите интересные записи в собственную коллекцию.</p></div></div><form id="create-collection" class="inline-form"><input name="name" placeholder="Название новой подборки" maxlength="100" required><button>Создать подборку +</button></form><div id="collection-list"></div><div class="pagination"><button id="collection-prev" class="quiet">← Назад</button><span id="collection-page"></span><button id="collection-next" class="quiet">Далее →</button></div></section>
+    <section id="imports" class="panel" hidden><div class="section-heading"><div><h2>Источники и импорт</h2><p>Настоящие внешние данные, контроль прогресса и повторный запуск.</p></div><button id="refresh-import">Обновить</button></div><div id="source-list" class="grid"></div><form id="start-import" class="inline-form"><label>Цель: уникальные книги<input name="target" type="number" min="10000" max="100000" value="10500" required></label><button>Запустить импорт ↗</button></form><p class="muted">Первый импорт запускается автоматически. Задачи сохраняются в MongoDB и продолжаются после перезапуска worker. Сбор из Open Library может занять несколько минут.</p><div id="job-list"></div></section>
+    <section id="monitor" class="panel" hidden><div class="section-heading"><div><h2>Состояние системы</h2><p>Все HTTP-запросы за последние 5 минут, включая отказы 429/503. p95 — приближенный перцентиль.</p></div><button id="refresh-monitor">Обновить</button></div><div id="services" class="grid"></div><div id="metrics" class="stats"></div><form id="trace-filter" class="inline-form"><input name="traceId" placeholder="Trace ID (пусто — последние запросы)"><button>Найти трассу</button></form><div class="table-wrap"><table><thead><tr><th>Сервис / операция</th><th>Время</th><th>Длительность</th><th>Ошибки</th><th>Trace ID / Parent span</th></tr></thead><tbody id="spans"></tbody></table></div></section>
+    <section id="explorer" class="panel" hidden><div class="section-heading"><div><h2>Исследуйте граф</h2><p>Поля, вложенность, переменные и фрагменты — под вашим контролем.</p></div></div><div class="inline-form"><label><input id="field-source" type="checkbox" checked> Источник</label><label><input id="field-details" type="checkbox" checked> Детали по типу</label><label><input id="field-notes" type="checkbox"> Заметки из второго сервиса</label><button id="build-query">Собрать запрос</button><button id="nested-query" class="quiet">Пример Federation</button></div><div class="explorer-grid"><label>GraphQL-запрос<textarea id="query" rows="19" spellcheck="false"></textarea></label><label>Переменные (JSON)<textarea id="variables" rows="6" spellcheck="false">{"page":1,"pageSize":12}</textarea><button id="run-query">Выполнить запрос ↗</button><p id="query-time" class="muted"></p></label></div><pre id="query-result">Результат появится здесь</pre></section>
+    <footer><span>ATLAS / LABORATORY 05</span><span>JavaScript · MongoDB · Apollo Federation</span></footer>
   </main>
-
-  <div id="toast" class="toast hidden"></div>
-  <script src="/app.js"></script>
-</body>
-</html>
+  <dialog id="detail"><button id="close-detail" class="dialog-close quiet" aria-label="Закрыть">✕</button><div id="detail-content"></div></dialog>
+  <dialog id="token-dialog"><h2>Токен администратора</h2><p>Нужен для изменений, если ADMIN_TOKEN задан на сервере.</p><form id="token-form"><input type="password" id="token" placeholder="ADMIN_TOKEN" autocomplete="off"><div class="inline-form"><button>Сохранить</button><button type="button" id="close-token" class="quiet">Отмена</button></div></form></dialog>
+</body></html>

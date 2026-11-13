@@ -1,0 +1,85 @@
+name: atlas-ha
+
+x-mongo: &mongo
+  image: mongo:8.0
+  command: ["mongod", "--replSet", "atlas", "--bind_ip_all", "--wiredTigerCacheSizeGB", "0.25"]
+  restart: unless-stopped
+  mem_limit: 768m
+  healthcheck:
+    test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand('ping').ok ? 0 : 1)"]
+    interval: 5s
+    timeout: 5s
+    retries: 30
+
+x-app: &app
+  build:
+    context: .
+    dockerfile: deploy/Dockerfile
+  restart: unless-stopped
+  init: true
+  environment: &environment
+    HOST: 0.0.0.0
+    MONGODB_URI: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/atlas_lab?replicaSet=atlas&retryWrites=true&w=majority
+    MONGODB_DATABASE: atlas_lab
+    INTERNAL_SECRET: ${INTERNAL_SECRET:-local-lab-secret-change-me}
+    ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+    CATALOG_URL: http://catalog:4001/graphql
+    WORKSPACE_URL: http://workspace:4002/graphql
+    AUTO_IMPORT: ${AUTO_IMPORT:-true}
+    IMPORT_TARGET: ${IMPORT_TARGET:-10500}
+    REQUESTS_PER_MINUTE: ${REQUESTS_PER_MINUTE:-180}
+    MAX_CONCURRENT_REQUESTS: ${MAX_CONCURRENT_REQUESTS:-30}
+  depends_on:
+    mongo-init:
+      condition: service_completed_successfully
+
+services:
+  mongo1:
+    <<: *mongo
+    volumes: ["mongo1_data:/data/db"]
+  mongo2:
+    <<: *mongo
+    volumes: ["mongo2_data:/data/db"]
+  mongo3:
+    <<: *mongo
+    volumes: ["mongo3_data:/data/db"]
+  mongo-init:
+    image: mongo:8.0
+    entrypoint: ["mongosh", "--host", "mongo1:27017", "--quiet", "/init-replica.js"]
+    volumes: ["./deploy/init-replica.js:/init-replica.js:ro"]
+    depends_on:
+      mongo1: { condition: service_healthy }
+      mongo2: { condition: service_healthy }
+      mongo3: { condition: service_healthy }
+  setup:
+    <<: *app
+    restart: "no"
+    command: ["node", "scripts/setup.js"]
+  catalog:
+    <<: *app
+    command: ["node", "src/catalog.js"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+  workspace:
+    <<: *app
+    command: ["node", "src/workspace.js"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+  worker:
+    <<: *app
+    command: ["node", "src/worker.js"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+  gateway:
+    <<: *app
+    command: ["node", "src/gateway.js"]
+    ports: ["127.0.0.1:4000:4000"]
+    depends_on:
+      setup: { condition: service_completed_successfully }
+      catalog: { condition: service_started }
+      workspace: { condition: service_started }
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:

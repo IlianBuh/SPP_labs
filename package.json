@@ -1,28 +1,41 @@
 {
-  "name": "pixel-canvas",
+  "name": "atlas-federated-lab",
   "version": "1.0.0",
-  "description": "Многопользовательская веб-игра «Пиксельный холст» (лабораторная №4)",
+  "private": true,
   "type": "module",
-  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.15"
+  },
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
-    "test": "node --test",
+    "start": "node src/start.js",
+    "start:gateway": "node src/gateway.js",
+    "start:catalog": "node src/catalog.js",
+    "start:workspace": "node src/workspace.js",
+    "start:worker": "node src/worker.js",
+    "import": "node scripts/import.js",
+    "test": "node --test test/unit.test.js test/transport.test.js",
+    "test:integration": "node --test test/integration.test.js",
+    "test:resilience": "node --test test/resilience.test.js",
+    "verify:live": "node scripts/verify-live.js",
+    "test:load": "node scripts/load.js",
     "lint": "eslint ."
   },
-  "engines": {
-    "node": ">=22"
-  },
-  "license": "UNLICENSED",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.7",
-    "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.13.3",
-    "ws": "^8.18.2"
+    "@apollo/composition": "^2.11.3",
+    "@apollo/gateway": "^2.11.3",
+    "@apollo/server": "^5.0.0",
+    "@apollo/subgraph": "^2.11.3",
+    "@as-integrations/express5": "^1.1.2",
+    "dataloader": "^2.2.3",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
+    "mongodb": "^6.17.0"
   },
+  "overrides": { "@graphql-tools/utils": "12.0.4" },
   "devDependencies": {
-    "eslint": "^9.27.0"
+    "eslint": "^9.30.0",
+    "mongodb-memory-server-core": "^11.3.0"
   }
 }

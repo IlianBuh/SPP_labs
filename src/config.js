@@ -1,43 +1,22 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-
-function loadEnvFile(file) {
-  if (!fs.existsSync(file)) return;
-  for (const line of fs.readFileSync(file, "utf8").split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    if (!key || key in process.env) continue;
-    process.env[key] = trimmed.slice(eq + 1).trim();
-  }
-}
-
-loadEnvFile(path.join(rootDir, ".env"));
-
-function int(value, fallback) {
-  const n = Number.parseInt(value, 10);
-  return Number.isInteger(n) ? n : fallback;
-}
+import 'dotenv/config';
 
 export const config = {
-  rootDir,
-  port: int(process.env.PORT, 3000),
-  databaseUrl: process.env.DATABASE_URL,
-  jwtSecret: process.env.JWT_SECRET || "dev-secret-change-me",
-  sessionTtlHours: int(process.env.SESSION_TTL_HOURS, 24),
-  cooldownMs: int(process.env.COOLDOWN_MS, 2000),
-  gridSize: int(process.env.GRID_SIZE, 100),
-  paletteSize: int(process.env.PALETTE, 16),
-  opLogSize: int(process.env.OP_LOG_SIZE, 5000),
-  persistFlushMs: int(process.env.PERSIST_FLUSH_MS, 100),
-  heartbeatIntervalMs: int(process.env.HEARTBEAT_INTERVAL_MS, 30000),
-  heartbeatTimeoutMs: int(process.env.HEARTBEAT_TIMEOUT_MS, 10000),
-  maxMessageSize: 64 * 1024,
-  logLevel: process.env.LOG_LEVEL || "info",
-  isProduction: process.env.NODE_ENV === "production",
+  host: process.env.HOST || '127.0.0.1',
+  mongoUri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017',
+  database: process.env.MONGODB_DATABASE || 'atlas_lab',
+  port: Number(process.env.PORT || 4000),
+  catalogPort: Number(process.env.CATALOG_PORT || 4001),
+  workspacePort: Number(process.env.WORKSPACE_PORT || 4002),
+  catalogUrl: process.env.CATALOG_URL || 'http://127.0.0.1:4001/graphql',
+  workspaceUrl: process.env.WORKSPACE_URL || 'http://127.0.0.1:4002/graphql',
+  internalSecret: process.env.INTERNAL_SECRET || 'local-lab-secret-change-me',
+  adminToken: process.env.ADMIN_TOKEN || '',
+  importTarget: Number(process.env.IMPORT_TARGET || 10500),
+  autoImport: process.env.AUTO_IMPORT !== 'false',
+  rate: Number(process.env.REQUESTS_PER_MINUTE || 180),
+  concurrent: Number(process.env.MAX_CONCURRENT_REQUESTS || 30),
+  upstreamTimeout: Number(process.env.UPSTREAM_TIMEOUT_MS || 30000),
+  workerLeaseMs: Math.max(1000, Number(process.env.WORKER_LEASE_MS || 90000)),
+  workerPollMs: Math.max(25, Number(process.env.WORKER_POLL_MS || 1000)),
+  mongoSelectionTimeout: Number(process.env.MONGO_SELECTION_TIMEOUT_MS || 20000),
 };

@@ -1,0 +1,17 @@
+{
+  "recordedFrom": "npm run test:resilience, successful run on 2026-11-14 Europe/Minsk",
+  "passed": true,
+  "fixtureRecords": 10101,
+  "resumedAfterWorkerCrash": true,
+  "indexPlansVerified": 24,
+  "primaryFailoverMs": 1328,
+  "load": {
+    "concurrency": 10,
+    "total": 3841,
+    "durationSeconds": 15.0381195,
+    "failed": 0,
+    "limited": 0,
+    "requestsPerSecond": 255.41757398589635,
+    "p95Ms": 54.9231
+  }
+}

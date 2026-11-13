@@ -1,0 +1,298 @@
+{
+  "startedAt": "2026-11-13T21:59:14.093Z",
+  "node": "v22.14.0",
+  "rateLimitForCapacityTest": 100000,
+  "job": {
+    "id": "4683565c-e840-4621-bfc6-685f30e73092",
+    "status": "COMPLETED",
+    "progress": [
+      {
+        "sourceId": "openlibrary",
+        "fetched": 10000,
+        "page": 100,
+        "done": true,
+        "error": null
+      },
+      {
+        "sourceId": "countries",
+        "fetched": 250,
+        "page": 1,
+        "done": true,
+        "error": null
+      },
+      {
+        "sourceId": "dummyjson",
+        "fetched": 194,
+        "page": 1,
+        "done": true,
+        "error": null
+      }
+    ],
+    "attempts": 1
+  },
+  "catalog": {
+    "catalogStats": {
+      "total": 10444,
+      "kinds": [
+        {
+          "kind": "COUNTRY",
+          "count": 250
+        },
+        {
+          "kind": "BOOK",
+          "count": 10000
+        },
+        {
+          "kind": "PRODUCT",
+          "count": 194
+        }
+      ],
+      "sources": [
+        {
+          "id": "openlibrary",
+          "count": 10000
+        },
+        {
+          "id": "countries",
+          "count": 250
+        },
+        {
+          "id": "dummyjson",
+          "count": 194
+        }
+      ]
+    }
+  },
+  "loads": [
+    {
+      "total": 6587,
+      "concurrency": 5,
+      "durationSeconds": 20.01408050000004,
+      "failed": 0,
+      "limited": 0,
+      "successful": 6587,
+      "requestsPerSecond": 329.11829249412614,
+      "successfulRequestsPerSecond": 329.11829249412614,
+      "p50Ms": 14.476900000008754,
+      "p95Ms": 21.43370000005234,
+      "successfulP95Ms": 21.433199999970384
+    },
+    {
+      "total": 4536,
+      "concurrency": 10,
+      "durationSeconds": 20.026019800000007,
+      "failed": 0,
+      "limited": 0,
+      "successful": 4536,
+      "requestsPerSecond": 226.50531884523545,
+      "successfulRequestsPerSecond": 226.50531884523545,
+      "p50Ms": 42.77449999994133,
+      "p95Ms": 58.95579999999609,
+      "successfulP95Ms": 58.95449999999255
+    },
+    {
+      "total": 4939,
+      "concurrency": 20,
+      "durationSeconds": 20.059963899999975,
+      "failed": 0,
+      "limited": 0,
+      "successful": 4939,
+      "requestsPerSecond": 246.21180898535945,
+      "successfulRequestsPerSecond": 246.21180898535945,
+      "p50Ms": 80.00130000000354,
+      "p95Ms": 98.63100000005215,
+      "successfulP95Ms": 98.62840000004508
+    }
+  ],
+  "plans": {
+    "title": {
+      "docsExamined": 20,
+      "plan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 20,
+        "inputStage": {
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "title": 1,
+              "_id": 1
+            },
+            "indexName": "title_1__id_1",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "title": [],
+              "_id": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "backward",
+            "indexBounds": {
+              "title": [
+                "[MaxKey, MinKey]"
+              ],
+              "_id": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "year": {
+      "docsExamined": 20,
+      "plan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 20,
+        "inputStage": {
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "year": -1,
+              "_id": -1
+            },
+            "indexName": "year_-1__id_-1",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "year": [],
+              "_id": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "year": [
+                "[MaxKey, MinKey]"
+              ],
+              "_id": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "value": {
+      "docsExamined": 20,
+      "plan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 20,
+        "inputStage": {
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "value": -1,
+              "_id": -1
+            },
+            "indexName": "value_-1__id_-1",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "value": [],
+              "_id": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "value": [
+                "[MaxKey, MinKey]"
+              ],
+              "_id": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "updatedAt": {
+      "docsExamined": 20,
+      "plan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 20,
+        "inputStage": {
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "updatedAt": -1,
+              "_id": -1
+            },
+            "indexName": "updatedAt_-1__id_-1",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "updatedAt": [],
+              "_id": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "updatedAt": [
+                "[MaxKey, MinKey]"
+              ],
+              "_id": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "diagnostics": {
+    "diagnostics": {
+      "requests": 16123,
+      "errors": 0,
+      "rejected": 0,
+      "rateLimited": 0,
+      "overloaded": 0,
+      "p95Ms": 86.36555555557909,
+      "services": [
+        {
+          "name": "gateway",
+          "status": "UP",
+          "requests": 16083,
+          "errors": 0,
+          "inflight": 18
+        },
+        {
+          "name": "catalog",
+          "status": "UP",
+          "requests": 15765,
+          "errors": 0,
+          "inflight": 11
+        },
+        {
+          "name": "workspace",
+          "status": "UP",
+          "requests": 100,
+          "errors": 0,
+          "inflight": 0
+        },
+        {
+          "name": "worker",
+          "status": "UP",
+          "requests": 1,
+          "errors": 0,
+          "inflight": 0
+        }
+      ]
+    }
+  },
+  "finishedAt": "2026-11-13T22:08:58.008Z"
+}
